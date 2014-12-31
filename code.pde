@@ -1,4 +1,7 @@
+/* @pjs pauseOnBlur="true"; */
+
 int totalDots = 180;
+int score = 0;
 int gameState = 0;
 int played = 0;
 int switchTime = random(100,300);
@@ -22,6 +25,7 @@ var game = new Howl({
 });
 
 void setup() {
+    noCursor();
     menu.play();
     // initialization
     width = 960;
@@ -57,17 +61,23 @@ void draw() {
         };
         if (played == 0) {
             textSize(60);
-            text ("Darkspin",width/2.55,height/2.5);
+            text ("Darkspin",(width/2.55) + random(-2,2),(height/2.5) + random(-2,2));
         } else {
             textSize(60);
-            text ("Crushed",width/2.55,height/2.5);
+            text ("Crushed",(width/2.55) + random(-2,2),(height/2.5) + random(-2,2));
+            textSize(30);
+            text (score,mouseX + random(-2,2),mouseY + random(-2,2));
         };
         
         textSize(30);
-        text ("click to start",width/2.35,height/2.2);
+        text ("click to start",width/2.35 + random(-1,1),height/2.2 + random(-1,1));
     };
     
+    fill((255 - r/1.1),(255 - g/1.1),(255 - b/1.1));
+    ellipse((mouseX-4),(mouseY-4),4,4);
+    
     if (gameState == 1) {
+        score += 1;
         if (switchTime > 0) {
             switchTime -= 1;
         } else {
@@ -84,6 +94,7 @@ void draw() {
 
 void mouseClicked() {
     if (gameState == 0) {
+        score = 0;
         gameState = 1;
         menu.stop();
         if (played == 0) {game.play();};
