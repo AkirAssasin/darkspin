@@ -18,31 +18,26 @@ float diameter = 12.0;
 var game1 = new Howl({
   urls: ['music/Cycles.mp3', 'music/Cycles.ogg'],
   loop: true,
-  buffer: true,
 });
 
 var game2 = new Howl({
   urls: ['music/Boom.mp3', 'music/Boom.ogg'],
   loop: true,
-  buffer: true,
 });
 
 var game3 = new Howl({
   urls: ['music/ThoughtBot.mp3', 'music/ThoughtBot.ogg'],
   loop: true,
-  buffer: true,
 });
 
 var game4 = new Howl({
   urls: ['music/DubstepLight.mp3', 'music/DubstepLight.ogg'],
   loop: true,
-  buffer: true,
 });
 
 var game5 = new Howl({
   urls: ['music/TechTalk.mp3', 'music/TechTalk.ogg'],
   loop: true,
-  buffer: true,
 });
 
 void setup() {
