@@ -1,15 +1,14 @@
-/* @pjs pauseOnBlur="true"; */
-
 int totalDots = 180;
 int score = 0;
 int gameState = 0;
 int played = 0;
 int switchTime = random(100,300);
 Dot[] dots = new Dot[totalDots];
-int r = random(255);
-int g = random(255);
-int b = random(255);
+int r = random(50,255);
+int g = random(50,255);
+int b = random(50,255);
 int musicPlaying = round(random(-0.5,5.4)); 
+int timeSlow = 300;
  
 int width, height;
 color fillColor;
@@ -43,7 +42,6 @@ var game5 = new Howl({
 void setup() {
     noCursor();
     game1.play();
-    // initialization
     width = 960;
     height = 800;
     size(width, height);
@@ -61,23 +59,48 @@ void setup() {
 };
  
 void draw() {
+    stroke(0, 15);
     fill(0, 15);
     rect(0, 0, width, height);
  
-    for (int i = 0; i < totalDots; i++) {
+    if (mousePressed && (mouseButton == RIGHT) && timeSlow > 0) {
+         if (gameState == 1) {
+             fill((255 - r/1.1),(255 - g/1.1),(255 - b/1.1));
+             textSize(60);
+             text (round(timeSlow/60),width/2 + random(-2,2),60 + random(-2,2));
+             fill(0);
+             ellipse(mouseX,mouseY,300,300);
+         };
+         fill(0);
+         stroke(r, g, b);
+         timeSlow -= 1;
+         for (int i = 0; i < totalDots; i++) {
+             dots[i].timeShift();
+         };
+    } else {
         fill(r, g, b);
-        stroke(r, g, b);
+        if (gameState == 1) {
+            score += 1;
+            textSize(30);
+            text (round(score/60) + "s",width/2 + random(-2,2),30 + random(-2,2));
+        };
+    };
+    
+    for (int i = 0; i < totalDots; i++) {
+        
         dots[i].update();
         if (gameState == 1) {rect(dots[i].x, dots[i].y, diameter, diameter);};
     }
     
     if (gameState == 0) {
+        document.body.style.background = '1C1C1C';
         for (int i = 0; i < totalDots; i++) {
             dots[i].sleep();
         };
+        fill(r, g, b);
         if (played == 0) {
             textSize(60);
-            text ("Darkspin",(width/2.55) + random(-2,2),(height/2.5) + random(-2,2));
+            text ("Darkrix",(width/2.43) + random(-2,2),(height/2.5) + random(-2,2));
         } else {
             fill(255,0,0);
             textSize(60);
@@ -88,9 +111,11 @@ void draw() {
         };
         
         textSize(30);
-        text ("click to start",width/2.35 + random(-1,1),height/2.2 + random(-1,1));
+        text ("LMB to start",width/2.35 + random(-1,1),height/2.2 + random(-1,1));
         textSize(20);
         text ("dodge the boxes",width/2.32 + random(-1,1),height/2.05 + random(-1,1));
+        textSize(15);
+        text ("RMB to slow down",width/2.25 + random(-1,1),height/1.95 + random(-1,1));
     };
     
     stroke((255 - r/1.1),(255 - g/1.1),(255 - b/1.1));
@@ -100,16 +125,14 @@ void draw() {
     strokeWeight(1);
     
     if (gameState == 1) {
-        textSize(30);
-        text (round(score/60) + "s",width/2 + random(-2,2),30 + random(-2,2));
-        score += 1;
+        document.body.style.background = hex(color(r/2,g/2,b/2),6);
         if (switchTime > 0) {
             switchTime -= 1;
         } else {
             switchTime = random(150,200);
-            r = random(255);
-            g = random(255);
-            b = random(255);
+            r = random(50,255);
+            g = random(50,255);
+            b = random(50,255);
             if (random(1) > 0.1) {
                 for (int i = 0; i < totalDots; i++) {
                      dots[i].switchMode();
@@ -124,7 +147,8 @@ void draw() {
 };
 
 void mouseClicked() {
-    if (gameState == 0) {
+    if (gameState == 0 && (mouseButton == LEFT)) {
+        timeSlow = 300;
         score = 0;
         gameState = 1;
         if (played == 0) {
@@ -148,11 +172,18 @@ class Dot {
     float mode = 6;
     
     void switchMode(){
-      this.mode = round(random(3.4));
+        this.mode = round(random(3.4));
     };
     
     void sweepMode(){
-      this.mode = round(random(3.5,5.4));
+        this.mode = round(random(3.5,5.4));
+    };
+    
+    void timeShift (){
+        if (dist((this.x + 6),(this.y + 6),mouseX,mouseY) < 200) {
+            this.vx /= 1.4;
+            this.vy /= 1.4;
+        };
     };
     
     void wake(){
