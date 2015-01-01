@@ -65,21 +65,22 @@ void draw() {
  
     if (mousePressed && (mouseButton == RIGHT) && timeSlow > 0) {
          if (gameState == 1) {
+             fill(0,30);
+             rect(0,0,width,height);
              fill((255 - r/1.1),(255 - g/1.1),(255 - b/1.1));
              textSize(60);
              text (round(timeSlow/60),width/2 + random(-2,2),60 + random(-2,2));
-             fill(0);
-             ellipse(mouseX,mouseY,300,300);
+             Howler.volume(0.4);
+             timeSlow -= 1;
          };
-         fill(0);
-         stroke(r, g, b);
-         timeSlow -= 1;
+         
          for (int i = 0; i < totalDots; i++) {
              dots[i].timeShift();
          };
     } else {
         fill(r, g, b);
         if (gameState == 1) {
+            Howler.volume(1);
             score += 1;
             textSize(30);
             text (round(score/60) + "s",width/2 + random(-2,2),30 + random(-2,2));
@@ -89,7 +90,7 @@ void draw() {
     for (int i = 0; i < totalDots; i++) {
         
         dots[i].update();
-        if (gameState == 1) {rect(dots[i].x, dots[i].y, diameter, diameter);};
+        if (gameState == 1) {dots[i].draw();};
     }
     
     if (gameState == 0) {
@@ -183,7 +184,19 @@ class Dot {
         if (dist((this.x + 6),(this.y + 6),mouseX,mouseY) < 200) {
             this.vx /= 1.4;
             this.vy /= 1.4;
+            strokeWeight(0);
+            stroke((255 - r/1.1),(255 - g/1.1),(255 - b/1.1));
+            line(this.x,this.y,mouseX,mouseY);
         };
+    };
+    
+    void draw () {
+        fill(r, g, b);
+        stroke(r, g, b);
+        if (mousePressed && (mouseButton == RIGHT) && timeSlow > 0 && dist((this.x + 6),(this.y + 6),mouseX,mouseY) < 200) {
+            fill(0);
+        };
+        rect(this.x - diameter/2, this.y - diameter/2, diameter, diameter);
     };
     
     void wake(){
