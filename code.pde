@@ -18,26 +18,31 @@ float diameter = 12.0;
 var game1 = new Howl({
   urls: ['music/Cycles.mp3', 'music/Cycles.ogg'],
   loop: true,
+  buffer: true,
 });
 
 var game2 = new Howl({
   urls: ['music/Boom.mp3', 'music/Boom.ogg'],
   loop: true,
+  buffer: true,
 });
 
 var game3 = new Howl({
   urls: ['music/ThoughtBot.mp3', 'music/ThoughtBot.ogg'],
   loop: true,
+  buffer: true,
 });
 
 var game4 = new Howl({
   urls: ['music/DubstepLight.mp3', 'music/DubstepLight.ogg'],
   loop: true,
+  buffer: true,
 });
 
 var game5 = new Howl({
   urls: ['music/TechTalk.mp3', 'music/TechTalk.ogg'],
   loop: true,
+  buffer: true,
 });
 
 void setup() {
@@ -50,7 +55,6 @@ void setup() {
     // initial fill colour
     fillColor = color(0, 0, 0);
     fill(fillColor);
-    noStroke();
     // array of dots
     for (int i = 0; i < totalDots; i++) {
         Dot d = new Dot();
@@ -67,6 +71,7 @@ void draw() {
  
     for (int i = 0; i < totalDots; i++) {
         fill(r, g, b);
+        stroke(r, g, b);
         dots[i].update();
         if (gameState == 1) {rect(dots[i].x, dots[i].y, diameter, diameter);};
     }
@@ -84,7 +89,7 @@ void draw() {
             text ("Crushed",(width/2.55) + random(-2,2),(height/2.5) + random(-2,2));
             fill(r, g, b);
             textSize(30);
-            text (round(score/60) + "s",mouseX + random(-2,2),mouseY + random(-2,2));
+            text (round(score/60) + "s",width/1.6 + random(-2,2),height/2.05 + random(-2,2));
         };
         
         textSize(30);
@@ -93,10 +98,15 @@ void draw() {
         text ("dodge the boxes",width/2.32 + random(-1,1),height/2.05 + random(-1,1));
     };
     
+    stroke((255 - r/1.1),(255 - g/1.1),(255 - b/1.1));
     fill((255 - r/1.1),(255 - g/1.1),(255 - b/1.1));
-    ellipse((mouseX-8),(mouseY-8),8,8);
+    strokeWeight(8);
+    line(mouseX,mouseY,pmouseX,pmouseY);
+    strokeWeight(1);
     
     if (gameState == 1) {
+        textSize(30);
+        text (round(score/60) + "s",width/2 + random(-2,2),30 + random(-2,2));
         score += 1;
         if (switchTime > 0) {
             switchTime -= 1;
@@ -192,14 +202,14 @@ class Dot {
       if (this.mode == 4) {
         if (mouseX > this.x) {this.vx += random(0.35); this.vx *= .96;};
         if (mouseX < this.x) {this.vx -= random(0.35); this.vx *= .96;};
-        this.vy += random(0.8) - 0.4;
+        this.vy += random(0.5);
         this.vy *= .96;
       }
       
       if (this.mode == 5) {
         if (mouseX > this.y) {this.vy += random(0.35); this.vy *= .96;};
         if (mouseX < this.y) {this.vy -= random(0.35); this.vy *= .96;};
-        this.vx += random(0.8) - 0.4;
+        this.vx += random(0.5);
         this.vx *= .96;
       }
       
