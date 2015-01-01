@@ -68,7 +68,7 @@ void draw() {
     for (int i = 0; i < totalDots; i++) {
         fill(r, g, b);
         dots[i].update();
-        rect(dots[i].x, dots[i].y, diameter, diameter);
+        if (gameState == 1) {rect(dots[i].x, dots[i].y, diameter, diameter);};
     }
     
     if (gameState == 0) {
@@ -79,8 +79,10 @@ void draw() {
             textSize(60);
             text ("Darkspin",(width/2.55) + random(-2,2),(height/2.5) + random(-2,2));
         } else {
+            fill(255,0,0);
             textSize(60);
             text ("Crushed",(width/2.55) + random(-2,2),(height/2.5) + random(-2,2));
+            fill(r, g, b);
             textSize(30);
             text (round(score/60) + "s",mouseX + random(-2,2),mouseY + random(-2,2));
         };
