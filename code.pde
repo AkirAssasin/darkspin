@@ -258,6 +258,7 @@ void mouseClicked() {
             timeSlow = timeSlowMax;
             score = 0;
             gameState = 1;
+            played = 1;
             for (int i = 0; i < totalDots; i++) {
                 dots[i].wake();
             };
