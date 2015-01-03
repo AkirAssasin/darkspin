@@ -7,9 +7,9 @@ Dot[] dots = new Dot[totalDots];
 int r = random(50,255);
 int g = random(50,255);
 int b = random(50,255);
-int musicPlaying = round(random(-0.5,4.4)); 
 int timeSlow = 300;
 int surroundDia = 230;
+int keyIsHold = 0;
 
 int gameMode = 0;
 int NormalChance = 0.2;
@@ -29,29 +29,31 @@ var impact = new Howl({
   urls: ['music/Impact.mp3', 'music/Impact.ogg'],
 });
 
-var game1 = new Howl({
+var[] bgm = new var[4];
+int musicPlaying = 3; 
+
+bgm[0] = new Howl({
   urls: ['music/Cycles.mp3', 'music/Cycles.ogg'],
   loop: true,
 });
 
-var game2 = new Howl({
+bgm[1] = new Howl({
   urls: ['music/Boom.mp3', 'music/Boom.ogg'],
   loop: true,
 });
 
-var game3 = new Howl({
+bgm[2] = new Howl({
   urls: ['music/TechTalk.mp3', 'music/TechTalk.ogg'],
   loop: true,
 });
 
-var game4 = new Howl({
+bgm[3] = new Howl({
   urls: ['music/DubstepLight.mp3', 'music/DubstepLight.ogg'],
   loop: true,
 });
 
 void setup() {
     noCursor();
-    game1.play();
     width = 960;
     height = 800;
     size(width, height);
@@ -67,6 +69,26 @@ void setup() {
 };
  
 void draw() {
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+        function handleFileSelect(evt) {
+            var f = evt.target.f; // FileList object
+            var reader = new FileReader();
+            reader.onload = (function() {
+                    return function(e) {
+                        var custom = new Howl({
+                            urls: ['e.target.result'],
+                            loop: true,
+                        }).play();
+                    };
+                })(f);
+      
+                reader.readAsDataURL(f);
+        };
+
+        document.getElementById('files').addEventListener('change', handleFileSelect, false);
+    } else {
+        alert('The File APIs are not fully supported in this browser.');
+    };
     document.body.style.background = hex(color(r,g,b),6);
     if (mousePressed && (mouseButton == RIGHT) && timeSlow > 0) {
          if (gameState == 1) {
@@ -111,7 +133,6 @@ void draw() {
         fill(0, 15);
         rect(0, 0, width, height);
         Howler.volume(1);
-        document.body.style.background = '1C1C1C';
         for (int i = 0; i < totalDots; i++) {
             dots[i].sleep();
         };
@@ -130,6 +151,9 @@ void draw() {
     
         textSize(20);
         text ("dodge the boxes",width/2.32 + random(-1,1),height/2.05 + random(-1,1));
+        
+        textSize(20);
+        text ("M to change music",width/2.4 + random(-1,1),height/1.1 + random(-1,1));
         
         fill((255 - r/1.1),(255 - g/1.1),(255 - b/1.1));
         textSize(40);
@@ -234,12 +258,6 @@ void mouseClicked() {
             timeSlow = timeSlowMax;
             score = 0;
             gameState = 1;
-            if (played == 0) {
-                if (musicPlaying == 2) {game1.stop(); game2.play();};
-                if (musicPlaying == 3) {game1.stop(); game3.play();};
-                if (musicPlaying == 4) {game1.stop(); game4.play();};
-            };
-            played = 1;
             for (int i = 0; i < totalDots; i++) {
                 dots[i].wake();
             };
@@ -250,6 +268,20 @@ void mouseClicked() {
                 gameMode = 0;
             };
         };
+    };
+};
+
+void keyPressed() {
+    if (key == 'm' || key == 'M') {
+        if (musicPlaying >= 3) {
+            bgm[musicPlaying].stop();
+            musicPlaying = 0;
+            bgm[musicPlaying].play();
+        } else {
+            bgm[musicPlaying].stop();
+            musicPlaying += 1;
+            bgm[musicPlaying].play();
+        }
     };
 };
 
@@ -356,7 +388,7 @@ class Dot {
             if (height/2 < this.y) {this.vy -= random(1.0); this.vy *= .96;};
         } else {
             if (random(1) > SurroundMissileChance) {
-                if (gameMode == 1) {this.mode = round(random(1.5,11.4))} else {this.mode = 10;};
+                if (gameMode == 1) {this.mode = round(random(2.5,11.4))} else {this.mode = 10;};
             };
             if (width/2 < this.x) {this.vx += random(0.7); this.vx *= .96;};
             if (width/2 > this.x) {this.vx -= random(0.7); this.vx *= .96;};
