@@ -1,9 +1,15 @@
-int totalDots = 180;
+/* @pjs font='fonts/induction.ttf' */ 
+
+var myfont = loadFont("fonts/induction.ttf"); 
+
+ArrayList dots;
+
+int isDebug = 0;
+
 int score = 0;
 int gameState = 0;
 int played = 0;
 int switchTime = 150;
-Dot[] dots = new Dot[totalDots];
 int r = random(50,255);
 int g = random(50,255);
 int b = random(50,255);
@@ -19,8 +25,6 @@ int UniqueChance = 0.5;
 int SurroundMissileChance = 0.9995;
 int timeSlowMax = 300;
 
-
-
 int width, height;
 color fillColor;
 float diameter = 12.0;
@@ -30,7 +34,7 @@ var impact = new Howl({
 });
 
 var[] bgm = new var[4];
-int musicPlaying = 3; 
+int musicPlaying = 0; 
 
 bgm[0] = new Howl({
   urls: ['music/Cycles.mp3', 'music/Cycles.ogg'],
@@ -57,38 +61,17 @@ void setup() {
     width = 960;
     height = 800;
     size(width, height);
+    dots = new ArrayList();
     fillColor = color(0, 0, 0);
     fill(fillColor);
-    for (int i = 0; i < totalDots; i++) {
-        Dot d = new Dot();
-        d.x = width/2;
-        d.y = height/2;
-        dots[i] = d;
-    }
     background(0);
 };
  
-void draw() {
-    if (window.File && window.FileReader && window.FileList && window.Blob) {
-        function handleFileSelect(evt) {
-            var f = evt.target.f; // FileList object
-            var reader = new FileReader();
-            reader.onload = (function() {
-                    return function(e) {
-                        var custom = new Howl({
-                            urls: ['e.target.result'],
-                            loop: true,
-                        }).play();
-                    };
-                })(f);
-      
-                reader.readAsDataURL(f);
-        };
+Number.prototype.between = function (min, max) {
+    return this > min && this < max;
+}; 
 
-        document.getElementById('files').addEventListener('change', handleFileSelect, false);
-    } else {
-        alert('The File APIs are not fully supported in this browser.');
-    };
+void draw() {
     document.body.style.background = hex(color(r,g,b),6);
     if (mousePressed && (mouseButton == RIGHT) && timeSlow > 0) {
          if (gameState == 1) {
@@ -104,10 +87,10 @@ void draw() {
              Howler.volume(1 - (timeSlow/timeSlowMax));
              timeSlow -= 1;
          };
-         
-         for (int i = 0; i < totalDots; i++) {
-             dots[i].timeShift();
-         };
+         for (int i=dots.size()-1; i>=0; i--) {
+             Particle d = (Dot) dots.get(i);
+             d.timeShift();
+         }
     } else {
         if (gameState == 1) {
             stroke(0, 15);
@@ -121,11 +104,10 @@ void draw() {
             };
         };
     };
-    
-    for (int i = 0; i < totalDots; i++) {
-        
-        dots[i].update();
-        if (gameState == 1) {dots[i].draw();};
+    for (int i=dots.size()-1; i>=0; i--) {
+             Particle d = (Dot) dots.get(i);
+             d.update();
+             d.draw();
     }
     
     if (gameState == 0) {
@@ -133,27 +115,53 @@ void draw() {
         fill(0, 15);
         rect(0, 0, width, height);
         Howler.volume(1);
-        for (int i = 0; i < totalDots; i++) {
-            dots[i].sleep();
-        };
+        for (int i=dots.size()-1; i>=0; i--) {
+             Particle d = (Dot) dots.get(i);
+             dots.remove(i);
+        }
         fill(r, g, b);
         if (played == 0) {
-            textSize(60);
-            text ("Darkrix",(width/2.43) + random(-3,3),(height/2.8) + random(-3,3));
+            textFont(myfont,60);
+            text ("Darkrix",(width/4) + random(-3,3),(height/2.8) + random(-3,3));
         } else {
             fill(255,0,0);
-            textSize(60);
-            text ("Crushed in",(width/3.1) + random(-3,3),(height/2.8) + random(-3,3));
+            textFont(myfont,60);
+            text ("Crushed",(width/5) + random(-3,3),(height/3.2) + random(-3,3));
             fill(r, g, b);
-            textSize(30);
-            text (round(score/60) + "s",width/1.55 + random(-2,2),height/2.8 + random(-2,2));
+            textFont(0,30);
+            if (round(score/60) < 10) {
+                text (round(score/60) + "s",width/2.01 + random(-2,2),height/2.7 + random(-2,2));
+            } else {
+                text (round(score/60) + "s",width/2.05 + random(-2,2),height/2.7 + random(-2,2));
+            }
+            
         };
-    
+        textFont(0);
         textSize(20);
         text ("dodge the boxes",width/2.32 + random(-1,1),height/2.05 + random(-1,1));
         
         textSize(20);
-        text ("M to change music",width/2.4 + random(-1,1),height/1.1 + random(-1,1));
+        switch(musicPlaying) {
+            case 1:
+                text ("Cycles",width/2.15 + random(-1,1),height/1.1 + random(-1,1));
+                text ("M to change music",width/2.4 + random(-1,1),height/1.05 + random(-1,1));
+                break;
+            case 2:
+                text ("Boom",width/2.13 + random(-1,1),height/1.1 + random(-1,1));
+                text ("M to change music",width/2.4 + random(-1,1),height/1.05 + random(-1,1));
+                break;
+            case 3:
+                text ("Tech Talk",width/2.2 + random(-1,1),height/1.1 + random(-1,1));
+                text ("M to change music",width/2.4 + random(-1,1),height/1.05 + random(-1,1));
+                break;
+            case 4:
+                text ("Dubstep Light",width/2.3 + random(-1,1),height/1.1 + random(-1,1));
+                text ("M to stop music",width/2.35 + random(-1,1),height/1.05 + random(-1,1));
+                break;
+            case 0:
+                text ("M to play music",width/2.3 + random(-1,1),height/1.05 + random(-1,1));
+                break;
+        }
         
         fill((255 - r/1.1),(255 - g/1.1),(255 - b/1.1));
         textSize(40);
@@ -204,6 +212,8 @@ void draw() {
     fill((255 - r/1.1),(255 - g/1.1),(255 - b/1.1));
     strokeWeight(8);
     line(mouseX,mouseY,pmouseX,pmouseY);
+    if (isDebug == 1) {text(mouseX + ", " + mouseY,mouseX,mouseY);}
+    
     strokeWeight(1);
     
     if (gameState == 1) {
@@ -217,8 +227,9 @@ void draw() {
             g = random(50,255);
             b = random(50,255);
             if (random(1) > NormalChance) {
-                for (int i = 0; i < totalDots; i++) {
-                     dots[i].switchMode();
+                for (int i=dots.size()-1; i>=0; i--) {
+                    Particle d = (Dot) dots.get(i);
+                    d.switchMode();
                 };
             } else {
                 if (random(1) > SurroundChance) {
@@ -232,17 +243,20 @@ void draw() {
                     } else {
                         surroundDia = width;
                     };
-                    for (int i = 0; i < totalDots; i++) {
-                        dots[i].surroundMode();
+                    for (int i=dots.size()-1; i>=0; i--) {
+                        Particle d = (Dot) dots.get(i);
+                        d.surroundMode();
                     };
                 } else {
                     if (random(1) > UniqueChance) {
-                        for (int i = 0; i < totalDots; i++) {
-                            dots[i].crushMode();
+                        for (int i=dots.size()-1; i>=0; i--) {
+                            Particle d = (Dot) dots.get(i);
+                            d.crushMode();
                         };
                     } else {
-                        for (int i = 0; i < totalDots; i++) {
-                            dots[i].sweepMode();
+                        for (int i=dots.size()-1; i>=0; i--) {
+                            Particle d = (Dot) dots.get(i);
+                            d.sweepMode();
                         };
                     };
                 };
@@ -253,35 +267,58 @@ void draw() {
 
 void mouseClicked() {
     if (gameState == 0) {
-        if (dist(width/2.15,height/1.5,mouseX,mouseY) < 100) {
+        if (mouseX.between(435,545) && mouseY.between(495,540)) {
             switchTime = 150;
             timeSlow = timeSlowMax;
             score = 0;
             gameState = 1;
             played = 1;
-            for (int i = 0; i < totalDots; i++) {
-                dots[i].wake();
+            for (int i; i<=180; i++) {
+            dots.add(new Dot());
             };
-        } else {
-            if (gameMode < 2) {
-                gameMode += 1;
-            } else {
-                gameMode = 0;
+        }
+        
+        if (mouseX.between(435,545) && mouseY.between(495,540)) {
+            switchTime = 150;
+            timeSlow = timeSlowMax;
+            score = 0;
+            gameState = 1;
+            played = 1;
+            for (int i; i<=180; i++) {
+            dots.add(new Dot());
             };
-        };
+        }
     };
 };
 
 void keyPressed() {
+    if (key == 'd' || key == 'D') {isDebug = 1;}
     if (key == 'm' || key == 'M') {
-        if (musicPlaying >= 3) {
-            bgm[musicPlaying].stop();
-            musicPlaying = 0;
-            bgm[musicPlaying].play();
-        } else {
-            bgm[musicPlaying].stop();
-            musicPlaying += 1;
-            bgm[musicPlaying].play();
+        hasMed = 1;
+        switch(musicPlaying) {
+            case 0:
+                bgm[0].play();
+                musicPlaying += 1;
+                break;
+            case 1:
+                bgm[0].stop();
+                bgm[1].play();
+                musicPlaying += 1;
+                break;
+            case 2:
+                bgm[1].stop();
+                bgm[2].play();
+                musicPlaying += 1;
+                break;
+            case 3:
+                bgm[2].stop();
+                bgm[3].play();
+                musicPlaying += 1;
+                break;
+            case 4:
+                bgm[3].stop();
+                musicPlaying = 0;
+                break;
         }
     };
 };
@@ -291,8 +328,12 @@ class Dot {
     float y = 0.0;
     float vx = 0.0;
     float vy = 0.0;
-    float mode = 6;
+    float mode = 1;
     
+    Dot() {
+        x = width/2;
+        y = height/2;
+    };
     void switchMode(){
         this.mode = round(random(0.5,4.4));
     };
@@ -333,16 +374,9 @@ class Dot {
         rect(this.x - diameter/2, this.y - diameter/2, diameter, diameter);
     };
     
-    void wake(){
-      this.mode = 1;
-    };
-    
-    void sleep(){
-      this.mode = 0;
-    };
-    
     void update(){
-      if ((dist((this.x + 6),(this.y + 6),mouseX,mouseY) < 7) && gameState == 1) {gameState = 0; impact.play();};
+      if (mouseX.between(this.x-6,this.x+6) && mouseY.between(this.y-6,this.y+6)) {gameState = 0; impact.play();};
+
       
       if (this.mode == 0) {
         this.x = width/2;
