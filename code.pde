@@ -3,9 +3,13 @@
 var myfont = loadFont("fonts/induction.ttf"); 
 
 ArrayList dots;
+int totalDots = 180;
+
+int startDelay;
 
 int isDebug = 0;
 
+int endScore = 0;
 int score = 0;
 int gameState = 0;
 int played = 0;
@@ -129,83 +133,106 @@ void draw() {
             text ("Crushed",(width/5) + random(-3,3),(height/3.2) + random(-3,3));
             fill(r, g, b);
             textFont(0,30);
-            if (round(score/60) < 10) {
-                text (round(score/60) + "s",width/2.01 + random(-2,2),height/2.7 + random(-2,2));
+            if (endScore < 10) {
+                text (round(endScore) + "s",width/2.01 + random(-2,2),height/2.7 + random(-2,2));
             } else {
-                text (round(score/60) + "s",width/2.05 + random(-2,2),height/2.7 + random(-2,2));
+                text (round(endScore) + "s",width/2.05 + random(-2,2),height/2.7 + random(-2,2));
             }
             
         };
         textFont(0);
         textSize(20);
-        text ("dodge the boxes",width/2.32 + random(-1,1),height/2.05 + random(-1,1));
+        if (totalDots >= 100) {text(totalDots + " boxes",width/2.16 + random(-1,1),height/2.05 + random(-1,1));} else {text(totalDots + " boxes",width/2.135 + random(-1,1),height/2.05 + random(-1,1));}
+        if (totalDots > 50) {triangle(430 + random(-1,1),378 + random(-1,1),420 + random(-1,1),383 + random(-1,1),430 + random(-1,1),388 + random(-1,1));};
+        if (totalDots < 250) {triangle(555 + random(-1,1),378 + random(-1,1),565 + random(-1,1),383 + random(-1,1),555 + random(-1,1),388 + random(-1,1));};
+        triangle(20 + random(-1,1),775 + random(-1,1),30 + random(-1,1),780 + random(-1,1),20 + random(-1,1),785 + random(-1,1));
         
         textSize(20);
         switch(musicPlaying) {
             case 1:
-                text ("Cycles",width/2.15 + random(-1,1),height/1.1 + random(-1,1));
-                text ("M to change music",width/2.4 + random(-1,1),height/1.05 + random(-1,1));
+                text ("Cycles",50 + random(-1,1),785 + random(-1,1));
                 break;
             case 2:
-                text ("Boom",width/2.13 + random(-1,1),height/1.1 + random(-1,1));
-                text ("M to change music",width/2.4 + random(-1,1),height/1.05 + random(-1,1));
+                text ("Boom",50 + random(-1,1),785 + random(-1,1));
                 break;
             case 3:
-                text ("Tech Talk",width/2.2 + random(-1,1),height/1.1 + random(-1,1));
-                text ("M to change music",width/2.4 + random(-1,1),height/1.05 + random(-1,1));
+                text ("Tech Talk",50 + random(-1,1),785 + random(-1,1));
                 break;
             case 4:
-                text ("Dubstep Light",width/2.3 + random(-1,1),height/1.1 + random(-1,1));
-                text ("M to stop music",width/2.35 + random(-1,1),height/1.05 + random(-1,1));
+                text ("Dubstep Light",50 + random(-1,1),785 + random(-1,1));
                 break;
             case 0:
-                text ("M to play music",width/2.3 + random(-1,1),height/1.05 + random(-1,1));
+                text ("- -",50 + random(-1,1),785 + random(-1,1));
                 break;
         }
         
         fill((255 - r/1.1),(255 - g/1.1),(255 - b/1.1));
-        textSize(40);
+        textSize(20);
         if (gameMode == 0) {
-        text ("Normal",(width/2.257) + random(-2,2),(height/2.35) + random(-2,2));
             NormalChance = 0.2;
             SurroundChance = 0.8;
             FullSurroundChance = 0.1;
             SurroundMissileChance = 0.9995;
             UniqueChance = 0.5;
             timeSlowMax = 300;
-            textSize(20);
-            text ("Difficulty: Medium",width/2.34 + random(-1,1),height/1.8 + random(-1,1));
-            textSize(15);
-        text ("right-click to slow down",width/2.335 + random(-1,1),height/1.95 + random(-1,1));
+            text ("Difficulty: Medium",width/2.34 + random(-1,1),height/2.2 + random(-1,1));
         };
         if (gameMode == 1) {
-        text ("Annulus",(width/2.3) + random(-2,2),(height/2.35) + random(-2,2));
             NormalChance = 1;
             SurroundChance = 0;
             FullSurroundChance = 0.3;
             SurroundMissileChance = 0.999;
             UniqueChance = 1;
             timeSlowMax = 0;
-            textSize(20);
-            text ("Difficulty: Hard",width/2.27 + random(-1,1),height/1.8 + random(-1,1));
-            textSize(15);
-            text ("no slowing down in this mode",width/2.45 + random(-1,1),height/1.95 + random(-1,1));
+            text ("Difficulty: Hard",width/2.27 + random(-1,1),height/2.2 + random(-1,1));
         };
         if (gameMode == 2) {
-        text ("Death Duet",(width/2.45) + random(-2,2),(height/2.35) + random(-2,2));
             NormalChance = 1;
             SurroundChance = 1;
             FullSurroundChance = 0.1;
             SurroundMissileChance = 0.9995;
             UniqueChance = 0.5;
             timeSlowMax = 360;
-            textSize(20);
-            text ("Difficulty: Insane",width/2.31 + random(-1,1),height/1.8 + random(-1,1));
-            textSize(15);
-            text ("right-click to slow down",width/2.335 + random(-1,1),height/1.95 + random(-1,1));
+            text ("Difficulty: Insane",width/2.31 + random(-1,1),height/2.2 + random(-1,1));
         };
+        
+        if (mouseX.between(439,538) && mouseY.between(688,742)) {
+            textSize(15);
+            text ("dodge the boxes",width/2.2 + random(-1,1),height/1.2 + random(-1,1));
+            fill(r, g, b);
+            if (totalDots > 50) {text("S",405 + random(-1,1),388 + random(-1,1));}
+            if (totalDots < 250) {text("W",570 + random(-1,1),388 + random(-1,1));}
+            
+            text ("M to change music",10 + random(-1,1),760 + random(-1,1));
+            fill((255 - r/1.1),(255 - g/1.1),(255 - b/1.1));
+            textSize(35);
+            text ("Change Mode",(width/2.47) + random(-2,2),(height/2.37) + random(-2,2));
+            textSize(15);
+            switch(gameMode) {
+                case 0:
+                case 2:
+                    text ("right-click to slow down",width/2.335 + random(-1,1),height/1.16 + random(-1,1));
+                    break;
+                case 1:
+                    text ("no slowing down in this mode",width/2.45 + random(-1,1),height/1.95 + random(-1,1));
+                    break;
+            };
+        } else {
+            textSize(40);
+            if (gameMode == 0) {
+                text ("Normal",(width/2.257) + random(-2,2),(height/2.35) + random(-2,2));
+            };
+            if (gameMode == 1) {
+                text ("Annulus",(width/2.3) + random(-2,2),(height/2.35) + random(-2,2));
+            };
+            if (gameMode == 2) {
+                text ("Death Duet",(width/2.45) + random(-2,2),(height/2.35) + random(-2,2));
+            };
+        }
+        
         textSize(40);
         text ("Start",width/2.15 + random(-1,1),height/1.5 + random(-1,1));
+        text ("Help",width/2.15 + random(-1,1),height/1.1 + random(-1,1));
     };
     
     stroke((255 - r/1.1),(255 - g/1.1),(255 - b/1.1));
@@ -273,25 +300,32 @@ void mouseClicked() {
             score = 0;
             gameState = 1;
             played = 1;
-            for (int i; i<=180; i++) {
+            for (int i; i<=totalDots; i++) {
             dots.add(new Dot());
             };
         }
         
-        if (mouseX.between(435,545) && mouseY.between(495,540)) {
-            switchTime = 150;
-            timeSlow = timeSlowMax;
-            score = 0;
-            gameState = 1;
-            played = 1;
-            for (int i; i<=180; i++) {
-            dots.add(new Dot());
+        if (mouseX.between(340,640) && mouseY.between(305,345)) {
+            switch(gameMode) {
+            case 0:
+                gameMode = 1;
+                break;
+            case 1:
+                gameMode = 2;
+                break;
+            case 2:
+                gameMode = 0;
+                break;
             };
         }
     };
 };
 
 void keyPressed() {
+    if (gameState == 0) {
+        if (key == 'w' || key == 'W') {if (totalDots < 250) {totalDots += 10;}}
+        if (key == 's' || key == 'S') {if (totalDots > 50) {totalDots -= 10;}}
+    }
     if (key == 'd' || key == 'D') {isDebug = 1;}
     if (key == 'm' || key == 'M') {
         hasMed = 1;
@@ -375,7 +409,7 @@ class Dot {
     };
     
     void update(){
-      if (mouseX.between(this.x-6,this.x+6) && mouseY.between(this.y-6,this.y+6)) {gameState = 0; impact.play();};
+      if (mouseX.between(this.x-6,this.x+6) && mouseY.between(this.y-6,this.y+6)) {gameState = 0; impact.play(); endScore = round(score/60)*(totalDots/180);};
 
       
       if (this.mode == 0) {
