@@ -8,8 +8,10 @@ int totalDots = 180;
 int startDelay;
 
 int isDebug = 0;
+int scoreOffset = 0;
 
-int endScore = 0;
+int prevDots = 0;
+var prevMode;
 int score = 0;
 int gameState = 0;
 int played = 0;
@@ -133,12 +135,18 @@ void draw() {
             text ("Crushed",(width/5) + random(-3,3),(height/3.2) + random(-3,3));
             fill(r, g, b);
             textFont(0,30);
-            if (endScore < 10) {
-                text (round(endScore) + "s",width/2.01 + random(-2,2),height/2.7 + random(-2,2));
-            } else {
-                text (round(endScore) + "s",width/2.05 + random(-2,2),height/2.7 + random(-2,2));
-            }
-            
+            scoreOffset = 0;
+            if (round(score/60) >= 10) {scoreOffset += 5;} 
+            if (prevDots < 100) {scoreOffset -= 5;} 
+            switch(prevMode) {
+            case "Annulus":
+                scoreOffset += 0.5;
+                break;
+            case "Death Duet":
+                scoreOffset += 20;
+                break;
+            };
+            text (round(score/60) + "s in " + prevMode + " with " + prevDots + " boxes",width/3.2 + random(-2,2) - scoreOffset,height/2.7 + random(-2,2));
         };
         textFont(0);
         textSize(20);
@@ -175,7 +183,9 @@ void draw() {
             SurroundMissileChance = 0.9995;
             UniqueChance = 0.5;
             timeSlowMax = 300;
-            text ("Difficulty: Medium",width/2.34 + random(-1,1),height/2.2 + random(-1,1));
+            if (totalDots <= 90) {text ("Difficulty: Easy",width/2.27 + random(-1,1),height/2.2 + random(-1,1));}
+            if (totalDots > 90 && totalDots <= 230) {text ("Difficulty: Medium",width/2.34 + random(-1,1),height/2.2 + random(-1,1));}
+            if (totalDots > 230) {text ("Difficulty: Hard",width/2.27 + random(-1,1),height/2.2 + random(-1,1));}
         };
         if (gameMode == 1) {
             NormalChance = 1;
@@ -184,7 +194,10 @@ void draw() {
             SurroundMissileChance = 0.999;
             UniqueChance = 1;
             timeSlowMax = 0;
-            text ("Difficulty: Hard",width/2.27 + random(-1,1),height/2.2 + random(-1,1));
+            if (totalDots <= 70) {text ("Difficulty: Easy",width/2.27 + random(-1,1),height/2.2 + random(-1,1));}
+            if (totalDots <= 120 && totalDots > 70) {text ("Difficulty: Medium",width/2.34 + random(-1,1),height/2.2 + random(-1,1));}
+            if (totalDots > 120 && totalDots <= 230) {text ("Difficulty: Hard",width/2.27 + random(-1,1),height/2.2 + random(-1,1));}
+            if (totalDots > 230) {text ("Difficulty: Insane",width/2.31 + random(-1,1),height/2.2 + random(-1,1));}
         };
         if (gameMode == 2) {
             NormalChance = 1;
@@ -193,7 +206,11 @@ void draw() {
             SurroundMissileChance = 0.9995;
             UniqueChance = 0.5;
             timeSlowMax = 360;
-            text ("Difficulty: Insane",width/2.31 + random(-1,1),height/2.2 + random(-1,1));
+            if (totalDots <= 70) {text ("Difficulty: Easy",width/2.27 + random(-1,1),height/2.2 + random(-1,1));}
+            if (totalDots <= 100 && totalDots > 70) {text ("Difficulty: Medium",width/2.34 + random(-1,1),height/2.2 + random(-1,1));}
+            if (totalDots <= 140 && totalDots > 100) {text ("Difficulty: Hard",width/2.27 + random(-1,1),height/2.2 + random(-1,1));}
+            if (totalDots > 140 && totalDots <= 230) {text ("Difficulty: Insane",width/2.31 + random(-1,1),height/2.2 + random(-1,1));}
+            if (totalDots > 230) {text ("Difficulty: Hard",width/2.27 + random(-1,1),height/2.2 + random(-1,1));}
         };
         
         if (mouseX.between(439,538) && mouseY.between(688,742)) {
@@ -206,7 +223,7 @@ void draw() {
             text ("M to change music",10 + random(-1,1),760 + random(-1,1));
             fill((255 - r/1.1),(255 - g/1.1),(255 - b/1.1));
             textSize(35);
-            text ("Change Mode",(width/2.47) + random(-2,2),(height/2.37) + random(-2,2));
+            text ("Change Mode",(width/2.48) + random(-2,2),(height/2.37) + random(-2,2));
             textSize(15);
             switch(gameMode) {
                 case 0:
@@ -214,7 +231,7 @@ void draw() {
                     text ("right-click to slow down",width/2.335 + random(-1,1),height/1.16 + random(-1,1));
                     break;
                 case 1:
-                    text ("no slowing down in this mode",width/2.45 + random(-1,1),height/1.95 + random(-1,1));
+                    text ("no slowing down in this mode",width/2.45 + random(-1,1),height/1.16 + random(-1,1));
                     break;
             };
         } else {
@@ -300,6 +317,18 @@ void mouseClicked() {
             score = 0;
             gameState = 1;
             played = 1;
+            prevDots = totalDots;
+            switch(gameMode) {
+            case 0:
+                prevMode = "Normal";
+                break;
+            case 1:
+                prevMode = "Annulus";
+                break;
+            case 2:
+                prevMode = "Death Duet";
+                break;
+            };
             for (int i; i<=totalDots; i++) {
             dots.add(new Dot());
             };
@@ -409,7 +438,7 @@ class Dot {
     };
     
     void update(){
-      if (mouseX.between(this.x-6,this.x+6) && mouseY.between(this.y-6,this.y+6)) {gameState = 0; impact.play(); endScore = round(score/60)*(totalDots/180);};
+      if (mouseX.between(this.x-6,this.x+6) && mouseY.between(this.y-6,this.y+6)) {gameState = 0; impact.play();};
 
       
       if (this.mode == 0) {
