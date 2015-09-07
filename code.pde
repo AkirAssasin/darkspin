@@ -104,7 +104,7 @@ void draw() {
             fill(r, g, b);
             Howler.volume(1);
             score += 1;
-            if (mousePressed && (mouseButton == RIGHT)) {} else {
+            if (!(mousePressed && mouseButton == RIGHT)) {
                 if (timeSlow < timeSlowMax) {timeSlow += 0.3;};
             };
         };
