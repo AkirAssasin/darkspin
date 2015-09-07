@@ -5,33 +5,33 @@ var myfont = loadFont("fonts/induction.ttf");
 ArrayList dots;
 int totalDots = 180;
 
-int startDelay;
+float startDelay;
 
 int isDebug = 0;
 int scoreOffset = 0;
 
 int prevDots = 0;
 var prevMode;
-int score = 0;
+float score = 0;
 int gameState = 0;
 int played = 0;
-int switchTime = 150;
-int r = random(50,255);
-int g = random(50,255);
-int b = random(50,255);
-int timeSlow = 300;
-int surroundDia = 230;
+float switchTime = 150;
+float r = random(50,255);
+float g = random(50,255);
+float b = random(50,255);
+float timeSlow = 300;
+float surroundDia = 230;
 int keyIsHold = 0;
 
 int gameMode = 0;
-int NormalChance = 0.2;
-int FullSurroundChance = 0.1;
-int SurroundChance = 0.8;
-int UniqueChance = 0.5;
-int SurroundMissileChance = 0.9995;
-int timeSlowMax = 300;
+float NormalChance = 0.2;
+float FullSurroundChance = 0.1;
+float SurroundChance = 0.8;
+float UniqueChance = 0.5;
+float SurroundMissileChance = 0.9995;
+float timeSlowMax = 300;
 
-int width, height;
+float width, height;
 color fillColor;
 float diameter = 12.0;
 
@@ -64,8 +64,8 @@ bgm[3] = new Howl({
 
 void setup() {
     noCursor();
-    width = 960;
-    height = 800;
+    width = window.innerWidth;
+    height = window.innerHeight;
     size(width, height);
     dots = new ArrayList();
     fillColor = color(0, 0, 0);
