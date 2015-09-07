@@ -71,6 +71,7 @@ void setup() {
     fillColor = color(0, 0, 0);
     fill(fillColor);
     background(0);
+    textAlign(CENTER);
 };
  
 Number.prototype.between = function (min, max) {
@@ -128,11 +129,11 @@ void draw() {
         fill(r, g, b);
         if (played == 0) {
             textFont(myfont,60);
-            text ("Darkrix",(width/4) + random(-3,3),(height/2.8) + random(-3,3));
+            text("Darkrix",width/2 + random(-3,3),height/4 + random(-3,3));
         } else {
             fill(255,0,0);
             textFont(myfont,60);
-            text ("Crushed",(width/5) + random(-3,3),(height/3.2) + random(-3,3));
+            text ("Crushed",width/2,height/2 + random(-3,3));
             fill(r, g, b);
             textFont(0,30);
             scoreOffset = 0;
@@ -146,7 +147,7 @@ void draw() {
                 scoreOffset += 20;
                 break;
             };
-            text (round(score/60) + "s in " + prevMode + " with " + prevDots + " boxes",width/3.2 + random(-2,2) - scoreOffset,height/2.7 + random(-2,2));
+            text (round(score/60) + "s in " + prevMode + " with " + prevDots + " boxes",width/2 + random(-2,2),height/2 + random(-2,2));
         };
         textFont(0);
         textSize(20);
