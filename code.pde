@@ -8,7 +8,6 @@ int totalDots = 180;
 float startDelay;
 
 int isDebug = 0;
-int scoreOffset = 0;
 
 int prevDots = 0;
 var prevMode;
@@ -136,23 +135,14 @@ void draw() {
             text ("Crushed",width/2,height/2 + random(-3,3));
             fill(r, g, b);
             textFont(0,30);
-            scoreOffset = 0;
-            if (round(score/60) >= 10) {scoreOffset += 5;} 
-            if (prevDots < 100) {scoreOffset -= 5;} 
-            switch(prevMode) {
-            case "Annulus":
-                scoreOffset += 0.5;
-                break;
-            case "Death Duet":
-                scoreOffset += 20;
-                break;
-            };
             text (round(score/60) + "s in " + prevMode + " with " + prevDots + " boxes",width/2 + random(-2,2),height/2 + random(-2,2));
         };
-        textFont(0);
-        textSize(20);
-        if (totalDots >= 100) {text(totalDots + " boxes",width/2.16 + random(-1,1),height/2.05 + random(-1,1));} else {text(totalDots + " boxes",width/2.135 + random(-1,1),height/2.05 + random(-1,1));}
-        if (totalDots > 50) {triangle(430 + random(-1,1),378 + random(-1,1),420 + random(-1,1),383 + random(-1,1),430 + random(-1,1),388 + random(-1,1));};
+        textFont(0,20);
+        text(totalDots + " boxes",width/2 + random(-1,1),height/2 + 50 + random(-1,1));
+        if (totalDots > 50) {
+          translate(width/2,height/2);
+          triangle(430 + random(-1,1),378 + random(-1,1),420 + random(-1,1),383 + random(-1,1),430 + random(-1,1),388 + random(-1,1));
+        }
         if (totalDots < 250) {triangle(555 + random(-1,1),378 + random(-1,1),565 + random(-1,1),383 + random(-1,1),555 + random(-1,1),388 + random(-1,1));};
         triangle(20 + random(-1,1),775 + random(-1,1),30 + random(-1,1),780 + random(-1,1),20 + random(-1,1),785 + random(-1,1));
         
