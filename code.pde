@@ -139,11 +139,6 @@ void draw() {
         };
         textFont(0,20);
         text(totalDots + " boxes",width/2 + random(-1,1),height/2 + 50 + random(-1,1));
-        if (totalDots > 50) {
-          translate(width/2,height/2);
-          triangle(430 + random(-1,1),378 + random(-1,1),420 + random(-1,1),383 + random(-1,1),430 + random(-1,1),388 + random(-1,1));
-        }
-        if (totalDots < 250) {triangle(555 + random(-1,1),378 + random(-1,1),565 + random(-1,1),383 + random(-1,1),555 + random(-1,1),388 + random(-1,1));};
         triangle(20 + random(-1,1),775 + random(-1,1),30 + random(-1,1),780 + random(-1,1),20 + random(-1,1),785 + random(-1,1));
         
         textSize(20);
@@ -174,7 +169,7 @@ void draw() {
             SurroundMissileChance = 0.9995;
             UniqueChance = 0.5;
             timeSlowMax = 300;
-            if (totalDots <= 90) {text ("Difficulty: Easy",width/2.27 + random(-1,1),height/2.2 + random(-1,1));}
+            if (totalDots <= 90) {text ("Difficulty: Easy",width/2 + random(-1,1),height/2 + 50 + random(-1,1));}
             if (totalDots > 90 && totalDots <= 230) {text ("Difficulty: Medium",width/2.34 + random(-1,1),height/2.2 + random(-1,1));}
             if (totalDots > 230) {text ("Difficulty: Hard",width/2.27 + random(-1,1),height/2.2 + random(-1,1));}
         };
