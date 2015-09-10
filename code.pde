@@ -3,7 +3,7 @@
 var myfont = loadFont("fonts/induction.ttf"); 
 
 ArrayList dots;
-int totalDots = 180;
+int totalDots;
 
 float startDelay;
 
@@ -22,7 +22,7 @@ float timeSlow = 300;
 float surroundDia = 230;
 int keyIsHold = 0;
 
-int gameMode = 0;
+int gameMode = 1;
 float NormalChance = 0.2;
 float FullSurroundChance = 0.1;
 float SurroundChance = 0.8;
@@ -70,6 +70,7 @@ void setup() {
     fillColor = color(0, 0, 0);
     fill(fillColor);
     background(0);
+    totalDots = round(180*(width+height)/(1760));
 };
  
 Number.prototype.between = function (min, max) {
@@ -77,7 +78,14 @@ Number.prototype.between = function (min, max) {
 }; 
 
 void draw() {
-    document.body.style.background = hex(color(r,g,b),6);
+    if (width != window.innerWidth) {
+      width = window.innerWidth;
+      size(width, height);
+    }
+    if (height != window.innerHeight) {
+      height = window.innerHeight;
+      size(width, height);
+    }
     if (mousePressed && (mouseButton == RIGHT) && timeSlow > 0) {
          if (gameState == 1) {
              stroke(0,30);
@@ -133,7 +141,7 @@ void draw() {
             fill(255,0,0);
             textFont(myfont,60);
             textAlign(CENTER);
-            text ("Crushed",width/2,height/2 + random(-3,3));
+            text ("Crushed",width/2,height/4 + random(-3,3));
             fill(r, g, b);
             textFont(0,30);
             text (round(score/60) + "s in " + prevMode + " with " + prevDots + " boxes",width/2 + random(-2,2),height/2 + random(-2,2));
@@ -200,7 +208,6 @@ void draw() {
             if (gameMode == 2) {
                 text ("Death Duet",width/2 + random(-2,2),(height/2.35) + random(-2,2));
             };
-        }
         
         textSize(40);
         text ("ENTER to Start",width/2 + random(-1,1),height/1.5 + random(-1,1));
@@ -264,27 +271,13 @@ void draw() {
 };
 
 void mouseClicked() {
-    if (gameState == 0) {
-        if (mouseX.between(340,640) && mouseY.between(305,345)) {
-            switch(gameMode) {
-            case 0:
-                gameMode = 1;
-                break;
-            case 1:
-                gameMode = 2;
-                break;
-            case 2:
-                gameMode = 0;
-                break;
-            };
-        }
-    };
+
 };
 
 void keyPressed() {
     if (gameState == 0) {
-        if (key == 'w' || key == 'W') {if (totalDots < 250) {totalDots += 10;}}
-        if (key == 's' || key == 'S') {if (totalDots > 50) {totalDots -= 10;}}
+        if (key == 'w' || key == 'W') {if (totalDots < round(250*(width+height)/(1760))) {totalDots += 10;}}
+        if (key == 's' || key == 'S') {if (totalDots > round(50*(width+height)/(1760))) {totalDots -= 10;}}
         if (keyCode == ENTER) {
             switchTime = 150;
             timeSlow = timeSlowMax;
@@ -305,6 +298,19 @@ void keyPressed() {
             };
             for (int i; i<=totalDots; i++) {
             dots.add(new Dot());
+            };
+        }
+        if (key == ' ') {
+          switch(gameMode) {
+            case 0:
+                gameMode = 1;
+                break;
+            case 1:
+                gameMode = 2;
+                break;
+            case 2:
+                gameMode = 0;
+                break;
             };
         }
     }
